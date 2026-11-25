@@ -240,7 +240,9 @@ export default function App() {
           {editor && (
             <>
               <Toolbar editor={editor} aiReady={aiReady} aiBusy={aiBusy} onContinue={continueWriting} />
-              <SelectionMenu editor={editor} aiReady={aiReady} onAction={rewriteSelection} />
+              {/* Unmount the menu during review. A locked editor does not re-check
+                  shouldShow, so the menu would otherwise stay open. */}
+              {!aiBusy && <SelectionMenu editor={editor} aiReady={aiReady} onAction={rewriteSelection} />}
             </>
           )}
           <EditorContent editor={editor} className="editor" />

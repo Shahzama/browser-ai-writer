@@ -9,9 +9,13 @@ export interface DiffPart {
 // so we fall back to showing "old text removed, new text added".
 const MAX_CELLS = 4_000_000;
 
-/** Split text into words and the whitespace between them, keeping both. */
+/**
+ * Split text into words, whitespace and single punctuation marks, keeping all of them.
+ * Apostrophes stay inside words ("It's"), but quotes, commas and full stops are
+ * separate tokens, so removing a quote mark does not mark the whole word as changed.
+ */
 export function tokenize(text: string): string[] {
-  return text.match(/\s+|[^\s]+/g) ?? [];
+  return text.match(/\s+|[\p{L}\p{N}'’]+|[^\s\p{L}\p{N}'’]/gu) ?? [];
 }
 
 function push(parts: DiffPart[], type: DiffType, value: string) {

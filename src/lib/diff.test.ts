@@ -9,6 +9,20 @@ describe("tokenize", () => {
   it("returns an empty list for empty text", () => {
     expect(tokenize("")).toEqual([]);
   });
+
+  it("splits punctuation but keeps apostrophes inside words", () => {
+    expect(tokenize('"It\'s ok."')).toEqual(['"', "It's", " ", "ok", ".", '"']);
+  });
+});
+
+describe("diffWords with punctuation", () => {
+  it("only marks the quotes as removed, not the whole words", () => {
+    expect(diffWords('"It\'s great."', "It's great.")).toEqual([
+      { type: "removed", value: '"' },
+      { type: "equal", value: "It's great." },
+      { type: "removed", value: '"' },
+    ]);
+  });
 });
 
 describe("diffWords", () => {

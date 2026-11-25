@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanOutput, joinContinuation, normalizeInline } from "./cleanOutput";
+import { cleanOutput, joinContinuation, limitSentences, normalizeInline } from "./cleanOutput";
 
 describe("cleanOutput", () => {
   it("removes a 'Here is the rewritten text:' preamble", () => {
@@ -61,5 +61,20 @@ describe("joinContinuation", () => {
 
   it("handles the start of a paragraph", () => {
     expect(joinContinuation("", " Hello")).toBe("Hello");
+  });
+});
+
+describe("limitSentences", () => {
+  it("keeps only the first sentences", () => {
+    expect(limitSentences("One. Two! Three? Four.", 3)).toBe("One. Two! Three?");
+  });
+
+  it("leaves short text alone", () => {
+    expect(limitSentences("Just one.", 3)).toBe("Just one.");
+    expect(limitSentences("no ending at all", 3)).toBe("no ending at all");
+  });
+
+  it("is applied in insert mode", () => {
+    expect(cleanOutput("A. B. C. D. E.", "insert")).toBe("A. B. C.");
   });
 });

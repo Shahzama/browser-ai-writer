@@ -17,6 +17,18 @@ const QUOTE_PAIRS: Array<[string, string]> = [
   ["'", "'"],
 ];
 
+export const MAX_CONTINUE_SENTENCES = 3;
+
+/**
+ * Small models often ignore "write one to three sentences", so the limit is
+ * also enforced here. Text without sentence endings is returned as it is.
+ */
+export function limitSentences(text: string, max: number): string {
+  const sentences = text.match(/[^.!?]+[.!?]+["'”’)\]]*\s*/g);
+  if (!sentences || sentences.length <= max) return text;
+  return sentences.slice(0, max).join("").trim();
+}
+
 /** Collapse line breaks and repeated spaces so text fits inline in a sentence. */
 export function normalizeInline(text: string): string {
   return text.replace(/\s*\n+\s*/g, " ").replace(/[ \t]{2,}/g, " ");
@@ -41,7 +53,7 @@ export function cleanOutput(raw: string, mode: SuggestionMode): string {
   }
 
   if (mode === "insert") {
-    text = normalizeInline(text).trim();
+    text = limitSentences(normalizeInline(text).trim(), MAX_CONTINUE_SENTENCES);
   } else {
     text = text.replace(/\n{3,}/g, "\n\n");
   }
