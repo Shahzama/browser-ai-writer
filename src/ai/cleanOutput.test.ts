@@ -21,6 +21,17 @@ describe("cleanOutput", () => {
     expect(cleanOutput('"""\nTriple quoted.\n"""', "replace")).toBe("Triple quoted.");
   });
 
+  it("removes mismatched quotes the model adds around its answer", () => {
+    expect(cleanOutput('"""\nI have reviewed the design before Friday."', "replace")).toBe(
+      "I have reviewed the design before Friday.",
+    );
+    expect(cleanOutput('"Fixed sentence."""', "replace")).toBe("Fixed sentence.");
+  });
+
+  it("keeps balanced quotes inside the text", () => {
+    expect(cleanOutput('She said "yes" today.', "replace")).toBe('She said "yes" today.');
+  });
+
   it("does not unwrap when quotes are also used inside", () => {
     const text = '"Yes," she said, "today."';
     expect(cleanOutput(text, "replace")).toBe(text);

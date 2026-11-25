@@ -41,6 +41,16 @@ export function cleanOutput(raw: string, mode: SuggestionMode): string {
     text = text.replace(pattern, "").trim();
   }
 
+  // Small models sometimes open with """ and close with " (or the reverse),
+  // so strip triple quotes on each end on their own, then a single stray
+  // quote when the text has an odd number of them.
+  text = text.replace(/^"{3}\s*/, "").replace(/\s*"{3}$/, "").trim();
+  const quoteCount = (text.match(/"/g) ?? []).length;
+  if (quoteCount % 2 === 1) {
+    if (text.startsWith('"')) text = text.slice(1).trim();
+    else if (text.endsWith('"')) text = text.slice(0, -1).trim();
+  }
+
   for (const [open, close] of QUOTE_PAIRS) {
     if (text.length > open.length + close.length && text.startsWith(open) && text.endsWith(close)) {
       const inner = text.slice(open.length, text.length - close.length);
