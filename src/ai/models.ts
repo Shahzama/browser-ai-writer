@@ -9,7 +9,7 @@ export const MODEL_OPTIONS: ModelOption[] = [
   {
     id: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
     name: "Qwen 2.5 0.5B",
-    note: "Smallest and fastest. Good for grammar fixes, weaker at rewrites.",
+    note: "Smallest and fastest. Best choice for phones. Weaker at rewrites.",
   },
   {
     id: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
@@ -29,6 +29,8 @@ export const MODEL_OPTIONS: ModelOption[] = [
 ];
 
 export const DEFAULT_MODEL_ID = MODEL_OPTIONS[1].id;
+/** Phones get the smallest model, since a bigger one can run out of memory and crash the tab. */
+export const SMALL_MODEL_ID = MODEL_OPTIONS[0].id;
 
 /**
  * Some GPUs (often older integrated ones) do not support 16-bit float shaders.

@@ -1,6 +1,10 @@
 import { BubbleMenu, type Editor } from "@tiptap/react";
 import { useRef, useState, type FormEvent } from "react";
 import { REWRITE_ACTIONS, type RewriteAction } from "../ai/prompts";
+import { isTouchDevice } from "../lib/device";
+
+// Phones show their own copy/paste bar above a selection, so our menu goes below it there.
+const MENU_PLACEMENT = isTouchDevice() ? "bottom-start" : "top-start";
 
 interface SelectionMenuProps {
   editor: Editor;
@@ -34,7 +38,7 @@ export function SelectionMenu({ editor, aiReady, busy, onAction }: SelectionMenu
   return (
     <BubbleMenu
       editor={editor}
-      tippyOptions={{ duration: 120, placement: "top-start", onHidden: () => setCustomOpen(false) }}
+      tippyOptions={{ duration: 120, placement: MENU_PLACEMENT, onHidden: () => setCustomOpen(false) }}
       shouldShow={({ editor: e, from, to }) => !busyRef.current && e.isEditable && from !== to}
     >
       {busy ? null : (

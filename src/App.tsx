@@ -3,7 +3,7 @@ import { EditorContent, useEditor, type Content, type Editor } from "@tiptap/rea
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { joinContinuation, normalizeInline } from "./ai/cleanOutput";
-import { DEFAULT_MODEL_ID, MODEL_OPTIONS } from "./ai/models";
+import { DEFAULT_MODEL_ID, MODEL_OPTIONS, SMALL_MODEL_ID } from "./ai/models";
 import {
   buildContinueMessages,
   buildRewriteMessages,
@@ -20,6 +20,7 @@ import { useAIEngine } from "./hooks/useAIEngine";
 import { useAISuggestion, type SuggestionRequest } from "./hooks/useAISuggestion";
 import { loadDoc, loadModelId, saveDoc } from "./lib/storage";
 import { isMac } from "./lib/keys";
+import { prefersSmallModel } from "./lib/device";
 
 // Sample text with real mistakes. Kept free of instructions on purpose:
 // small models tend to follow instructions found inside the text they edit.
@@ -32,7 +33,8 @@ const STARTER_CONTENT = `
 
 function initialModelId(): string {
   const saved = loadModelId();
-  return saved && MODEL_OPTIONS.some((m) => m.id === saved) ? saved : DEFAULT_MODEL_ID;
+  if (saved && MODEL_OPTIONS.some((m) => m.id === saved)) return saved;
+  return prefersSmallModel() ? SMALL_MODEL_ID : DEFAULT_MODEL_ID;
 }
 
 /** Turn plain model output into editor content without parsing it as HTML. */
@@ -253,7 +255,7 @@ export default function App() {
           </footer>
         </section>
 
-        <aside className="side-panel" aria-label="AI suggestion">
+        <aside className={`side-panel${s.status === "idle" ? "" : " active"}`} aria-label="AI suggestion">
           <SuggestionPanel
             state={s}
             onAccept={accept}

@@ -16,7 +16,7 @@ export async function checkWebGPU(): Promise<GPUCheck> {
       supported: false,
       supportsF16: false,
       reason:
-        "This browser does not support WebGPU. Open Browser AI Writer in a recent desktop version of Chrome or Edge.",
+        "This browser does not support WebGPU, which the AI needs. On a computer, use a recent Chrome or Edge. On a phone, use Chrome on Android 12 or newer, or Safari on iOS 26 or newer. You can still write and edit here.",
     };
   }
 

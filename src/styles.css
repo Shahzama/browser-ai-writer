@@ -537,3 +537,104 @@ select {
     transition: none !important;
   }
 }
+
+/* ---------- Phones and touch screens ---------- */
+
+/* Keyboard shortcut hints mean nothing without a keyboard. */
+@media (hover: none) and (pointer: coarse) {
+  kbd {
+    display: none;
+  }
+
+  button {
+    min-height: 40px;
+  }
+
+  .bubble button {
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 12px;
+  }
+
+  .app-header {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .brand h1 {
+    font-size: 1.15rem;
+  }
+
+  .model-panel {
+    min-width: 100%;
+  }
+
+  .model-row select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .editor .prose {
+    min-height: 45vh;
+    padding: 16px;
+    font-size: 1rem;
+  }
+
+  .toolbar .spacer {
+    display: none;
+  }
+
+  .toolbar .ai-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .bubble {
+    max-width: calc(100vw - 24px);
+  }
+
+  .bubble-form input {
+    width: min(220px, 55vw);
+  }
+
+  .status-bar span:last-child {
+    display: none;
+  }
+}
+
+/* On narrow screens the suggestion panel would sit below the editor, out of
+   sight. While a suggestion is active it becomes a sheet fixed to the bottom. */
+@media (max-width: 900px) {
+  .side-panel {
+    position: static;
+  }
+
+  .side-panel.active {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    top: auto;
+    z-index: 50;
+  }
+
+  .side-panel.active .panel-card {
+    max-height: 55vh;
+    overflow: auto;
+    box-shadow: 0 -4px 24px rgb(0 0 0 / 0.35);
+  }
+
+  .side-panel.active .stream-text,
+  .side-panel.active .diff {
+    max-height: 28vh;
+  }
+
+  /* Leave room so the end of the document is not hidden behind the sheet. */
+  .workspace:has(.side-panel.active) .editor .prose {
+    padding-bottom: 45vh;
+  }
+}
