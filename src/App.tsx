@@ -23,13 +23,11 @@ import { loadDoc, loadModelId, saveDoc } from "./lib/storage";
 import { isMac } from "./lib/keys";
 import { prefersSmallModel } from "./lib/device";
 
-// Sample text with real mistakes. Kept free of instructions on purpose:
-// small models tend to follow instructions found inside the text they edit.
 const STARTER_CONTENT = `
-<h2>Project update</h2>
-<p>Hi Priya,</p>
-<p>I has reviewed the new design and their are a few thing we needs to change before friday.</p>
-<p>The main issue is the checkout page. It loads slowly on mobile and users</p>
+<h2>Welcome to Browser AI Writer</h2>
+<p>This editor runs a small language model inside your browser. Nothing you write leaves your device.</p>
+<p>Try it: select this sentence, its kind of rough and has a few mistake in it, then click Fix grammar.</p>
+<p>Or put your cursor at the end of this line and press Ctrl+J to let the AI keep writing</p>
 `;
 
 function initialModelId(): string {
