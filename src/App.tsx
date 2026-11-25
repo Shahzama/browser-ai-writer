@@ -23,10 +23,13 @@ import { loadDoc, loadModelId, saveDoc } from "./lib/storage";
 import { isMac } from "./lib/keys";
 import { prefersSmallModel } from "./lib/device";
 
+// The sentence with mistakes is kept apart from the instructions on purpose:
+// small models tend to follow instructions found inside the text they edit.
 const STARTER_CONTENT = `
 <h2>Welcome to Browser AI Writer</h2>
 <p>This editor runs a small language model inside your browser. Nothing you write leaves your device.</p>
-<p>Try it: select this sentence, its kind of rough and has a few mistake in it, then click Fix grammar.</p>
+<p>Try it: select the next sentence and click Fix grammar.</p>
+<p>I has reviewed the new design and their are a few thing we needs to change before friday.</p>
 <p>Or put your cursor at the end of this line and press Ctrl+J to let the AI keep writing</p>
 `;
 
