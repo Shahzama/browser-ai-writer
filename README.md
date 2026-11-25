@@ -4,7 +4,7 @@ A private AI writing editor that runs a language model inside your browser.
 
 No API key. No backend. No cost. After the first load it even works offline, and your text never leaves your device.
 
-**Live demo:** _add your Vercel link here_
+**Live demo:** https://browser-ai-writer.vercel.app (open in desktop Chrome or Edge)
 
 <!-- Record a short GIF (select text, click "Fix grammar", accept, then press Ctrl+J),
      save it as docs/demo.gif and uncomment the next line. -->
