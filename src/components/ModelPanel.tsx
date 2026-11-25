@@ -1,5 +1,6 @@
 import { MODEL_OPTIONS } from "../ai/models";
 import type { EngineState } from "../hooks/useAIEngine";
+import { formatProgress } from "../lib/progress";
 
 interface ModelPanelProps {
   engine: EngineState;
@@ -53,7 +54,9 @@ export function ModelPanel({ engine, selectedId, onSelect, onLoad }: ModelPanelP
       {engine.status === "loading" && (
         <div className="progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(engine.progress * 100)}>
           <div className="progress-bar" style={{ width: `${Math.round(engine.progress * 100)}%` }} />
-          <span className="progress-text">{engine.progressText}</span>
+          <span className="progress-text" title={engine.progressText}>
+            {formatProgress(engine.progress, engine.progressText)}
+          </span>
         </div>
       )}
 
