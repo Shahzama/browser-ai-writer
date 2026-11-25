@@ -27,7 +27,7 @@ import { prefersSmallModel } from "./lib/device";
 const STARTER_CONTENT = `
 <h2>Project update</h2>
 <p>Hi Priya,</p>
-<p>Thanks for you're quick reply yesterday. I has reviewed the new design and their are a few thing we needs to change before friday.</p>
+<p>I has reviewed the new design and their are a few thing we needs to change before friday.</p>
 <p>The main issue is the checkout page. It loads slowly on mobile and users</p>
 `;
 
