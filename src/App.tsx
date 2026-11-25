@@ -15,6 +15,7 @@ import { ModelPanel } from "./components/ModelPanel";
 import { SelectionMenu } from "./components/SelectionMenu";
 import { SuggestionPanel } from "./components/SuggestionPanel";
 import { Toolbar } from "./components/Toolbar";
+import { UnsupportedBanner } from "./components/UnsupportedBanner";
 import { AIDecorations, getGhostPos, setAIDecorations } from "./editor/aiDecorations";
 import { useAIEngine } from "./hooks/useAIEngine";
 import { useAISuggestion, type SuggestionRequest } from "./hooks/useAISuggestion";
@@ -239,6 +240,8 @@ export default function App() {
           onLoad={() => void ai.load(selectedModel)}
         />
       </header>
+
+      {ai.status === "unsupported" && <UnsupportedBanner reason={ai.error} />}
 
       <main className="workspace">
         <section className="editor-shell">

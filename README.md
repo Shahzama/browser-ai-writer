@@ -88,7 +88,7 @@ The AI needs WebGPU. The editor itself works everywhere.
 - **Computers:** recent Chrome or Edge. Firefox and Safari work on newer versions.
 - **Android phones:** Chrome on Android 12 or newer, with a Qualcomm or ARM GPU (most recent phones).
 - **iPhone and iPad:** Safari on iOS or iPadOS 26 or newer.
-- **Everything else:** the app shows a clear message and you can still write and edit.
+- **Everything else:** the app explains why the AI cannot run, shows the demo GIF so visitors still see what it does, and keeps the editor usable. Add `?nowebgpu` to the URL to preview this screen.
 
 On phones the app picks the smallest model (Qwen 2.5 0.5B) by default, since larger models can run out of memory. The AI menu opens below your selection so it does not cover the phone's own copy and paste bar, and suggestions appear in a panel fixed to the bottom of the screen.
 

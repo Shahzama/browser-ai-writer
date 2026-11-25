@@ -9,8 +9,17 @@ type NavigatorWithGPU = Navigator & {
   gpu?: { requestAdapter(): Promise<GPUAdapterLike | null> };
 };
 
+/** Add ?nowebgpu to the URL to preview what visitors without WebGPU see. */
+function simulateNoWebGPU(): boolean {
+  try {
+    return new URLSearchParams(location.search).has("nowebgpu");
+  } catch {
+    return false;
+  }
+}
+
 export async function checkWebGPU(): Promise<GPUCheck> {
-  const gpu = (navigator as NavigatorWithGPU).gpu;
+  const gpu = simulateNoWebGPU() ? undefined : (navigator as NavigatorWithGPU).gpu;
   if (!gpu) {
     return {
       supported: false,

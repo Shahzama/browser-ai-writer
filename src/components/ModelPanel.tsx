@@ -60,7 +60,7 @@ export function ModelPanel({ engine, selectedId, onSelect, onLoad }: ModelPanelP
         </div>
       )}
 
-      {(engine.status === "unsupported" || engine.status === "error") && engine.error && (
+      {engine.status === "error" && engine.error && (
         <p className="notice" role="alert">
           {engine.error}
         </p>
