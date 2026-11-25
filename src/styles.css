@@ -299,6 +299,17 @@ select {
   border-color: var(--border);
 }
 
+.continue-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.length-select {
+  padding: 5px 8px;
+  font-size: 0.85rem;
+}
+
 .divider {
   width: 1px;
   height: 22px;
@@ -636,8 +647,12 @@ select {
     display: none;
   }
 
-  .toolbar .ai-button {
+  .continue-group {
     width: 100%;
+  }
+
+  .toolbar .ai-button {
+    flex: 1;
     justify-content: center;
   }
 

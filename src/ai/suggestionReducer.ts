@@ -11,10 +11,12 @@ export interface SuggestionState {
   text: string;
   range: TextRange | null;
   error: string | null;
+  /** Word limit for "Continue writing". */
+  maxWords?: number;
 }
 
 export type SuggestionAction =
-  | { type: "start"; mode: SuggestionMode; label: string; original: string; range: TextRange }
+  | { type: "start"; mode: SuggestionMode; label: string; original: string; range: TextRange; maxWords?: number }
   | { type: "chunk"; delta: string }
   | { type: "finish" }
   | { type: "fail"; message: string }
@@ -49,13 +51,14 @@ export function suggestionReducer(state: SuggestionState, action: SuggestionActi
         label: action.label,
         original: action.original,
         range: action.range,
+        maxWords: action.maxWords,
       };
     case "chunk":
       if (state.status !== "streaming") return state;
       return { ...state, text: state.text + action.delta };
     case "finish": {
       if (state.status !== "streaming") return state;
-      const text = cleanOutput(state.text, state.mode);
+      const text = cleanOutput(state.text, state.mode, state.maxWords);
       if (!text) return { ...initialSuggestion, status: "error", error: EMPTY_OUTPUT_ERROR };
       return { ...state, status: "review", text };
     }

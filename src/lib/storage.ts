@@ -36,3 +36,21 @@ export function saveModelId(id: string): void {
     /* storage unavailable */
   }
 }
+
+const LENGTH_KEY = "browser-ai-writer:continue-length:v1";
+
+export function loadContinueLength(): string | null {
+  try {
+    return localStorage.getItem(LENGTH_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveContinueLength(id: string): void {
+  try {
+    localStorage.setItem(LENGTH_KEY, id);
+  } catch {
+    /* storage unavailable */
+  }
+}

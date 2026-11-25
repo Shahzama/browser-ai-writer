@@ -8,6 +8,8 @@ import {
   buildContinueMessages,
   buildRewriteMessages,
   CONTINUE_CONTEXT_CHARS,
+  getContinueLength,
+  type ContinueLengthId,
   MAX_SELECTION_CHARS,
   type RewriteAction,
 } from "./ai/prompts";
@@ -19,7 +21,7 @@ import { UnsupportedBanner } from "./components/UnsupportedBanner";
 import { AIDecorations, getGhostPos, setAIDecorations } from "./editor/aiDecorations";
 import { useAIEngine } from "./hooks/useAIEngine";
 import { useAISuggestion, type SuggestionRequest } from "./hooks/useAISuggestion";
-import { loadDoc, loadModelId, saveDoc } from "./lib/storage";
+import { loadContinueLength, loadDoc, loadModelId, saveContinueLength, saveDoc } from "./lib/storage";
 import { isMac } from "./lib/keys";
 import { prefersSmallModel } from "./lib/device";
 
@@ -60,6 +62,13 @@ export default function App() {
   const suggestion = useAISuggestion(ai.engine);
   const { state: s } = suggestion;
   const [selectedModel, setSelectedModel] = useState(initialModelId);
+  const [continueLength, setContinueLength] = useState<ContinueLengthId>(
+    () => getContinueLength(loadContinueLength()).id,
+  );
+  const changeContinueLength = useCallback((id: ContinueLengthId) => {
+    setContinueLength(id);
+    saveContinueLength(id);
+  }, []);
   const lastRequestRef = useRef<SuggestionRequest | null>(null);
   const prevCharRef = useRef("");
   const saveTimerRef = useRef<number | undefined>(undefined);
@@ -117,6 +126,7 @@ export default function App() {
 
   const continueWriting = useCallback(() => {
     if (!editor || !aiReady || aiBusy) return;
+    const length = getContinueLength(continueLength);
     const pos = editor.state.selection.to;
     const context = editor.state.doc.textBetween(Math.max(0, pos - CONTINUE_CONTEXT_CHARS), pos, "\n\n");
     if (context.trim().length < 20) {
@@ -126,13 +136,14 @@ export default function App() {
     prevCharRef.current = pos > 1 ? editor.state.doc.textBetween(pos - 1, pos, "\n") : "";
     start({
       mode: "insert",
-      label: "Continue writing",
+      label: `Continue writing · ~${length.words} words`,
       original: "",
       range: { from: pos, to: pos },
-      messages: buildContinueMessages(context),
-      options: { temperature: 0.7, maxTokens: 160 },
+      messages: buildContinueMessages(context, length.words),
+      maxWords: length.words,
+      options: { temperature: 0.7, maxTokens: length.maxTokens },
     });
-  }, [editor, aiReady, aiBusy, start, suggestion]);
+  }, [editor, aiReady, aiBusy, start, suggestion, continueLength]);
 
   const accept = useCallback(() => {
     if (!editor || s.status !== "review" || !s.range) return;
@@ -248,7 +259,14 @@ export default function App() {
         <section className="editor-shell">
           {editor && (
             <>
-              <Toolbar editor={editor} aiReady={aiReady} aiBusy={aiBusy} onContinue={continueWriting} />
+              <Toolbar
+                editor={editor}
+                aiReady={aiReady}
+                aiBusy={aiBusy}
+                onContinue={continueWriting}
+                continueLength={continueLength}
+                onContinueLengthChange={changeContinueLength}
+              />
               <SelectionMenu editor={editor} aiReady={aiReady} busy={aiBusy} onAction={rewriteSelection} />
             </>
           )}

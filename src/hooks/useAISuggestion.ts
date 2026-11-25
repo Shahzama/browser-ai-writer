@@ -8,6 +8,7 @@ export interface SuggestionRequest {
   original: string;
   range: TextRange;
   messages: ChatMessage[];
+  maxWords?: number;
   options?: StreamOptions;
 }
 
@@ -31,6 +32,7 @@ export function useAISuggestion(engine: AIEngine | null) {
         label: request.label,
         original: request.original,
         range: request.range,
+        maxWords: request.maxWords,
       });
 
       try {

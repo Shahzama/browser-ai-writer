@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { resolveModelId } from "./models";
-import { buildContinueMessages, buildRewriteMessages, CONTINUE_CONTEXT_CHARS } from "./prompts";
+import { buildContinueMessages, buildRewriteMessages, CONTINUE_CONTEXT_CHARS, getContinueLength } from "./prompts";
 
 describe("buildRewriteMessages", () => {
   it("sends a system rule message and the user text", () => {
@@ -32,5 +32,17 @@ describe("resolveModelId", () => {
 
   it("switches to the f32 model for older GPUs", () => {
     expect(resolveModelId("Llama-3.2-1B-Instruct-q4f16_1-MLC", false)).toBe("Llama-3.2-1B-Instruct-q4f32_1-MLC");
+  });
+});
+
+describe("continue length", () => {
+  it("puts the word target in the instructions", () => {
+    expect(buildContinueMessages("Some text here.", 100)[0].content).toContain("about 100 words");
+  });
+
+  it("falls back to medium for unknown or missing values", () => {
+    expect(getContinueLength("huge").id).toBe("medium");
+    expect(getContinueLength(null).words).toBe(50);
+    expect(getContinueLength("short").words).toBe(25);
   });
 });

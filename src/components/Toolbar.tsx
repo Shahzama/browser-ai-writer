@@ -1,4 +1,5 @@
 import type { Editor } from "@tiptap/react";
+import { CONTINUE_LENGTHS, type ContinueLengthId } from "../ai/prompts";
 import { MOD_LABEL } from "../lib/keys";
 
 interface ToolbarProps {
@@ -6,9 +7,11 @@ interface ToolbarProps {
   aiReady: boolean;
   aiBusy: boolean;
   onContinue: () => void;
+  continueLength: ContinueLengthId;
+  onContinueLengthChange: (id: ContinueLengthId) => void;
 }
 
-export function Toolbar({ editor, aiReady, aiBusy, onContinue }: ToolbarProps) {
+export function Toolbar({ editor, aiReady, aiBusy, onContinue, continueLength, onContinueLengthChange }: ToolbarProps) {
   const editable = editor.isEditable;
 
   const button = (label: string, title: string, active: boolean, run: () => void, disabled = false) => (
@@ -41,16 +44,32 @@ export function Toolbar({ editor, aiReady, aiBusy, onContinue }: ToolbarProps) {
       {button("↶", "Undo", false, () => editor.chain().focus().undo().run(), !editor.can().undo())}
       {button("↷", "Redo", false, () => editor.chain().focus().redo().run(), !editor.can().redo())}
       <span className="spacer" />
-      <button
-        type="button"
-        className="ai-button"
-        disabled={!aiReady || aiBusy || !editable}
-        title={aiReady ? `Continue writing (${MOD_LABEL}+J)` : "Load a model first"}
-        onMouseDown={(event) => event.preventDefault()}
-        onClick={onContinue}
-      >
-        ✦ Continue writing <kbd>{MOD_LABEL}+J</kbd>
-      </button>
+      <div className="continue-group">
+        <select
+          className="length-select"
+          aria-label="Length of AI continuation"
+          title="How much the AI should write"
+          value={continueLength}
+          disabled={!editable}
+          onChange={(event) => onContinueLengthChange(event.target.value as ContinueLengthId)}
+        >
+          {CONTINUE_LENGTHS.map((length) => (
+            <option key={length.id} value={length.id}>
+              {length.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="ai-button"
+          disabled={!aiReady || aiBusy || !editable}
+          title={aiReady ? `Continue writing (${MOD_LABEL}+J)` : "Load a model first"}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={onContinue}
+        >
+          ✦ Continue writing <kbd>{MOD_LABEL}+J</kbd>
+        </button>
+      </div>
     </div>
   );
 }

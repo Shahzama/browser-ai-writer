@@ -51,3 +51,20 @@ describe("suggestionReducer", () => {
     expect(failed.error).toBe("GPU lost");
   });
 });
+
+describe("suggestionReducer word limit", () => {
+  it("trims continue-writing output to the chosen length", () => {
+    const long = Array.from({ length: 3 }, () => "one two three four five six seven eight nine ten.").join(" ");
+    let state = suggestionReducer(initialSuggestion, {
+      type: "start",
+      mode: "insert",
+      label: "Continue writing",
+      original: "",
+      range: { from: 5, to: 5 },
+      maxWords: 10,
+    });
+    state = suggestionReducer(state, { type: "chunk", delta: long });
+    state = suggestionReducer(state, { type: "finish" });
+    expect(state.text).toBe("one two three four five six seven eight nine ten.");
+  });
+});

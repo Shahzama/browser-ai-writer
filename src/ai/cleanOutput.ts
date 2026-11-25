@@ -17,7 +17,7 @@ const QUOTE_PAIRS: Array<[string, string]> = [
   ["'", "'"],
 ];
 
-export const MAX_CONTINUE_SENTENCES = 3;
+export const DEFAULT_MAX_WORDS = 50;
 
 /**
  * Small models often ignore "write one to three sentences", so the limit is
@@ -29,12 +29,31 @@ export function limitSentences(text: string, max: number): string {
   return sentences.slice(0, max).join("").trim();
 }
 
+const countWords = (text: string) => text.split(/\s+/).filter(Boolean).length;
+
+/**
+ * Small models cannot count words, so the limit is enforced here: keep whole
+ * sentences while they fit (with 20% slack). If even the first sentence is too
+ * long, cut it at the limit and end it with an ellipsis.
+ */
+export function limitWords(text: string, max: number): string {
+  if (countWords(text) <= max) return text;
+  const sentences = text.match(/[^.!?]+[.!?]+["'”’)\]]*\s*/g) ?? [];
+  let kept = "";
+  for (const sentence of sentences) {
+    if (countWords(kept + sentence) > max * 1.2) break;
+    kept += sentence;
+  }
+  if (kept.trim()) return kept.trim();
+  return text.split(/\s+/).filter(Boolean).slice(0, max).join(" ").replace(/[,;:]$/, "") + "…";
+}
+
 /** Collapse line breaks and repeated spaces so text fits inline in a sentence. */
 export function normalizeInline(text: string): string {
   return text.replace(/\s*\n+\s*/g, " ").replace(/[ \t]{2,}/g, " ");
 }
 
-export function cleanOutput(raw: string, mode: SuggestionMode): string {
+export function cleanOutput(raw: string, mode: SuggestionMode, maxWords: number = DEFAULT_MAX_WORDS): string {
   let text = raw.trim();
 
   for (const pattern of PREAMBLE_PATTERNS) {
@@ -63,7 +82,7 @@ export function cleanOutput(raw: string, mode: SuggestionMode): string {
   }
 
   if (mode === "insert") {
-    text = limitSentences(normalizeInline(text).trim(), MAX_CONTINUE_SENTENCES);
+    text = limitWords(normalizeInline(text).trim(), maxWords);
   } else {
     text = text.replace(/\n{3,}/g, "\n\n");
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanOutput, joinContinuation, limitSentences, normalizeInline } from "./cleanOutput";
+import { cleanOutput, joinContinuation, limitSentences, limitWords, normalizeInline } from "./cleanOutput";
 
 describe("cleanOutput", () => {
   it("removes a 'Here is the rewritten text:' preamble", () => {
@@ -85,7 +85,29 @@ describe("limitSentences", () => {
     expect(limitSentences("no ending at all", 3)).toBe("no ending at all");
   });
 
-  it("is applied in insert mode", () => {
-    expect(cleanOutput("A. B. C. D. E.", "insert")).toBe("A. B. C.");
+
+});
+
+describe("limitWords", () => {
+  const sentence = (n: number) => Array.from({ length: n }, () => "word").join(" ") + ".";
+
+  it("leaves text under the limit alone", () => {
+    expect(limitWords("Short text here.", 25)).toBe("Short text here.");
+  });
+
+  it("keeps whole sentences that fit", () => {
+    const text = `${sentence(10)} ${sentence(10)} ${sentence(10)}`;
+    expect(limitWords(text, 20)).toBe(`${sentence(10)} ${sentence(10)}`);
+  });
+
+  it("cuts one very long sentence at the limit", () => {
+    const result = limitWords(sentence(40), 25);
+    expect(result.endsWith("…")).toBe(true);
+    expect(result.split(" ").length).toBe(25);
+  });
+
+  it("uses the word limit in insert mode", () => {
+    const text = `${sentence(20)} ${sentence(20)} ${sentence(20)}`;
+    expect(cleanOutput(text, "insert", 25)).toBe(sentence(20));
   });
 });
