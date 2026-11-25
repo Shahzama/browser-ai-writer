@@ -540,6 +540,11 @@ select {
 
 /* ---------- Browsers that cannot run the AI ---------- */
 
+/* No side panel when the AI cannot run, so the editor takes the full width. */
+.workspace:not(:has(.side-panel)) {
+  grid-template-columns: 1fr;
+}
+
 .unsupported {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);

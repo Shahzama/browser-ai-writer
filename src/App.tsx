@@ -258,6 +258,8 @@ export default function App() {
           </footer>
         </section>
 
+        {/* The AI tips make no sense in a browser that cannot run the model. */}
+        {ai.status !== "unsupported" && (
         <aside className={`side-panel${s.status === "idle" ? "" : " active"}`} aria-label="AI suggestion">
           <SuggestionPanel
             state={s}
@@ -267,6 +269,7 @@ export default function App() {
             onRetry={retry}
           />
         </aside>
+        )}
       </main>
     </div>
   );

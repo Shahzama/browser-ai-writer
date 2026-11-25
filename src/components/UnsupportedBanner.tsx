@@ -14,7 +14,6 @@ export function UnsupportedBanner({ reason }: UnsupportedBannerProps) {
         <h2 id="unsupported-title">This browser can't run the AI model</h2>
         <p>{reason}</p>
         <p>Here is what the app does on a supported browser: fixing grammar with a reviewed diff, then continuing the text with AI.</p>
-        <p className="muted small">You can still write and format text in the editor below.</p>
         <p className="small">
           <a href="https://github.com/Shahzama/browser-ai-writer" target="_blank" rel="noreferrer">
             See the code and how it works on GitHub
