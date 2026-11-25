@@ -2,7 +2,7 @@
 
 A private AI writing editor that runs a language model inside your browser.
 
-No API key. No backend. No cost. After the first load it even works offline, and your text never leaves your device.
+No API key. No backend. No cost. Your text never leaves your device, and after the first download the model loads from the browser cache.
 
 **Live demo:** https://browser-ai-writer.vercel.app (open in desktop Chrome or Edge)
 
@@ -47,7 +47,7 @@ These are the trade-offs I made on purpose.
 
 | Decision | Why | Trade-off |
 | --- | --- | --- |
-| Run the model in the browser | Zero cost, private by design, works offline | Small models write worse than GPT-class models. First download is large. |
+| Run the model in the browser | Zero cost, private by design, model cached after the first download | Small models write worse than GPT-class models. First download is large. |
 | Web Worker for the engine | Generation never blocks the UI thread | A bit more setup |
 | Decorations instead of inserting text while streaming | Undo history stays clean, rejecting is instant | Needed a custom ProseMirror plugin |
 | Small `AIEngine` interface | The UI does not know about WebLLM, so tests use a fake engine, and a hosted API could replace it later | One extra layer |

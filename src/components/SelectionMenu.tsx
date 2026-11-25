@@ -1,14 +1,24 @@
 import { BubbleMenu, type Editor } from "@tiptap/react";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { REWRITE_ACTIONS, type RewriteAction } from "../ai/prompts";
 
 interface SelectionMenuProps {
   editor: Editor;
   aiReady: boolean;
+  /** True while a suggestion is streaming or waiting for review. */
+  busy: boolean;
   onAction: (action: RewriteAction) => void;
 }
 
-export function SelectionMenu({ editor, aiReady, onAction }: SelectionMenuProps) {
+/**
+ * The BubbleMenu must stay mounted. Tiptap moves its element elsewhere in the
+ * DOM while it is visible, so unmounting it at that moment makes React crash
+ * ("removeChild: the node to be removed is not a child of this node").
+ * During review we keep it mounted but render nothing inside it.
+ */
+export function SelectionMenu({ editor, aiReady, busy, onAction }: SelectionMenuProps) {
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
   const [customOpen, setCustomOpen] = useState(false);
   const [instruction, setInstruction] = useState("");
 
@@ -25,8 +35,9 @@ export function SelectionMenu({ editor, aiReady, onAction }: SelectionMenuProps)
     <BubbleMenu
       editor={editor}
       tippyOptions={{ duration: 120, placement: "top-start", onHidden: () => setCustomOpen(false) }}
-      shouldShow={({ editor: e, from, to }) => e.isEditable && from !== to}
+      shouldShow={({ editor: e, from, to }) => !busyRef.current && e.isEditable && from !== to}
     >
+      {busy ? null : (
       <div className="bubble" role="menu" aria-label="AI actions for selected text">
         {!aiReady ? (
           <span className="bubble-hint">Load a model to use AI on this selection</span>
@@ -63,6 +74,7 @@ export function SelectionMenu({ editor, aiReady, onAction }: SelectionMenuProps)
           </>
         )}
       </div>
+      )}
     </BubbleMenu>
   );
 }
