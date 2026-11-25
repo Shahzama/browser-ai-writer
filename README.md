@@ -6,9 +6,9 @@ No API key. No backend. No cost. Your text never leaves your device, and after t
 
 **Live demo:** https://browser-ai-writer.vercel.app (open in desktop Chrome or Edge)
 
-<!-- Record a short GIF (select text, click "Fix grammar", accept, then press Ctrl+J),
-     save it as docs/demo.gif and uncomment the next line. -->
-<!-- ![Browser AI Writer demo](docs/demo.gif) -->
+![Browser AI Writer demo: fixing grammar with a reviewed diff, then continuing the text with Ctrl+J](docs/demo.gif)
+
+_Recorded on the live site with Llama 3.2 1B running in the browser._
 
 ## What it does
 

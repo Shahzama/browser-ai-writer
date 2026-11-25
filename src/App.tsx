@@ -172,7 +172,8 @@ export default function App() {
       if (s.mode === "replace") {
         setAIDecorations(editor, { highlight: s.range, ghost: null });
       } else {
-        const preview = s.status === "review" ? s.text : normalizeInline(s.text);
+        // Hide a leading quote mark while streaming; cleanOutput removes it at the end anyway.
+        const preview = s.status === "review" ? s.text : normalizeInline(s.text).replace(/^\s*["“]+/, "");
         setAIDecorations(editor, {
           highlight: null,
           ghost: { pos: s.range.from, text: joinContinuation(prevCharRef.current, preview) },
